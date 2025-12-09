@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="@android:color/transparent" />
+
+    <size android:height="220dp" />
+
+    <corners
+        android:topLeftRadius="220dp"
+        android:topRightRadius="220dp" />
+</shape>
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:shape="rectangle">-->
+<!--    <size android:height="200dp" />-->
+<!--    <corners-->
+<!--        android:topLeftRadius="200dp"-->
+<!--        android:topRightRadius="200dp" />-->
+<!--    <solid android:color="#FF00AA" />-->
+<!--</shape>-->
+
+<!--<vector xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:width="300dp"-->
+<!--    android:height="150dp"-->
+<!--    android:viewportWidth="300"-->
+<!--    android:viewportHeight="150">-->
+
+<!--    <path-->
+<!--        android:fillColor="#FFFFFFFF"-->
+<!--        android:pathData="M0,150 A150,150 0 0 1 300,150 L300,0 L0,0 Z"/>-->
+<!--</vector>-->
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:shape="rectangle">-->
+<!--    <solid android:color="#FF00AA" />-->
+<!--    <size-->
+<!--        android:width="300dp"-->
+<!--        android:height="150dp" />-->
+<!--    <corners-->
+<!--        android:topLeftRadius="150dp"-->
+<!--        android:topRightRadius="150dp"/>-->
+<!--</shape>-->
+
