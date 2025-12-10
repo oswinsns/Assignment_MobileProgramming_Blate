@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
 
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!isValid) return;
 
                 // SUCCESS → MOVE TO NEXT ACTIVITY
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 intent.putExtra("email", emailInput);
                 startActivity(intent);
 
