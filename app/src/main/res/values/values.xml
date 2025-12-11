@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Hobbies List -->
+    <string-array name="hobbies_list">
+        <item>Reading</item>
+        <item>Gaming</item>
+        <item>Cooking</item>
+        <item>Traveling</item>
+        <item>Sports</item>
+        <item>Music</item>
+        <item>Photography</item>
+        <item>Drawing</item>
+    </string-array>
+
+    <!-- Current Job List -->
+    <string-array name="job_list">
+        <item>Student</item>
+        <item>Software Developer</item>
+        <item>Engineer</item>
+        <item>Designer</item>
+        <item>Teacher</item>
+        <item>Business Owner</item>
+        <item>Unemployed</item>
+        <item>Other</item>
+    </string-array>
+
+    <!-- Religion List -->
+    <string-array name="religion_list">
+        <item>Islam</item>
+        <item>Christianity</item>
+        <item>Catholic</item>
+        <item>Hinduism</item>
+        <item>Buddhism</item>
+        <item>Confucianism</item>
+        <item>Other</item>
+    </string-array>
+
+</resources>
