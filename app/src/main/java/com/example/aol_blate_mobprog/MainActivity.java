@@ -1,8 +1,10 @@
 package com.example.aol_blate_mobprog;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -15,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button loginButton;
 
-
-
+    ImageView btnHelp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         genderGroup = findViewById(R.id.genderGroup);
         chkTerms = findViewById(R.id.checkBox);
         TextView tv = findViewById(R.id.tvlinktoPage);
+
 
         String text = "Already Have an Account? Login";
         SpannableString ss = new SpannableString(text);
@@ -138,5 +141,31 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "🎉 Login Successful!", Toast.LENGTH_LONG).show();
             }
         });
+
+        //Buat button help pojok kanan
+        showHelpDialog();
+
     }
+
+    private void showHelpDialog() {
+        btnHelp = findViewById(R.id.btnHelp);
+        btnHelp.setOnClickListener(v->{
+            Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dialog_help);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+            TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+            TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+            Button btnClose = dialog.findViewById(R.id.btnCloseDialog);
+
+            // ISI PESAN REGISTRASI
+            tvTitle.setText("Registration Info");
+            tvMessage.setText("Create your new account here. Please use a valid email address and create a strong password (at least 8 characters).");
+
+            btnClose.setOnClickListener(view -> dialog.dismiss());
+            dialog.show();
+        });
+
+    }
+
 }
