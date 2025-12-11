@@ -12,11 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AOL_BLATE_Mobprog">
         <activity
+            android:name=".HistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChatActivity"
+                android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"/>
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
