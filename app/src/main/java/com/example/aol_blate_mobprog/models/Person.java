@@ -1,13 +1,13 @@
 package com.example.aol_blate_mobprog.models;
 
-public class People {
+public class Person {
     private int id;
     private String profile, name, dob, domicile,
                     current_job, religion, about;
     private boolean gender;
     private String[] hobbies;
 
-    public People(int id, String profile, String name, String dob, String domicile, String current_job, String religion, String about, boolean gender, String[] hobbies) {
+    public Person(int id, String profile, String name, String dob, String domicile, String current_job, String religion, String about, boolean gender, String[] hobbies) {
         this.id = id;
         this.profile = profile;
         this.name = name;

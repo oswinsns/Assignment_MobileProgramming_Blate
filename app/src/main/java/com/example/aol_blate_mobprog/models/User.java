@@ -1,14 +1,13 @@
 package com.example.aol_blate_mobprog.models;
 
-public class Users extends People {
+public class User extends Person {
     private String email, password;
-    private int[] connected_to;
+    private int[] accept, reject;
 
-    public Users(int id, String profile, String name, String dob, String domicile, String current_job, String religion, String about, boolean gender, String[] hobbies, String email, String password, int[] connected_to) {
+    public User(int id, String profile, String name, String dob, String domicile, String current_job, String religion, String about, boolean gender, String[] hobbies, String email, String password) {
         super(id, profile, name, dob, domicile, current_job, religion, about, gender, hobbies);
         this.email = email;
         this.password = password;
-        this.connected_to = connected_to;
     }
 
     public String getEmail() {
@@ -25,10 +24,17 @@ public class Users extends People {
         this.password = password;
     }
 
-    public int[] getConnected_to() {
-        return connected_to;
+    public int[] getAccept() {
+        return accept;
     }
-    public void setConnected_to(int[] connected_to) {
-        this.connected_to = connected_to;
+    public void setAccept(int[] accept) {
+        this.accept = accept;
+    }
+
+    public int[] getReject() {
+        return reject;
+    }
+    public void setReject(int[] reject) {
+        this.reject = reject;
     }
 }
