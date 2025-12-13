@@ -1,13 +1,17 @@
 package com.example.aol_blate_mobprog.models;
 
+import java.util.List;
+
 public class Person {
     private int id;
     private String profile, name, dob, domicile,
                     current_job, religion, about;
     private boolean gender;
-    private String[] hobbies;
+    private List<String> hobbies;
 
-    public Person(int id, String profile, String name, String dob, String domicile, String current_job, String religion, String about, boolean gender, String[] hobbies) {
+    public Person() {};
+
+    public Person(int id, String profile, String name, String dob, String domicile, String current_job, String religion, String about, boolean gender, List<String> hobbies) {
         this.id = id;
         this.profile = profile;
         this.name = name;
@@ -92,11 +96,11 @@ public class Person {
         this.gender = gender;
     }
 
-    public String[] getHobbies() {
+    public List<String> getHobbies() {
         return hobbies;
     }
 
-    public void setHobbies(String[] hobbies) {
+    public void setHobbies(List<String> hobbies) {
         this.hobbies = hobbies;
     }
 }

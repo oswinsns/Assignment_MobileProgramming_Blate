@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "706956606678",
-    "project_id": "blate-810c5",
-    "storage_bucket": "blate-810c5.firebasestorage.app"
+    "project_number": "895921223106",
+    "project_id": "blate-f85cb",
+    "storage_bucket": "blate-f85cb.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:706956606678:android:dd10ba21172eb45375dd77",
+        "mobilesdk_app_id": "1:895921223106:android:51d1ef148aeb6bab76d25b",
         "android_client_info": {
           "package_name": "com.example.aol_blate_mobprog"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAp-lSwZAxDDQoNf0lVitxqPEwbuiNHZTQ"
+          "current_key": "AIzaSyDsGbe6NW4OihEO8s0Ml_QxlcqjZuRMz-Y"
         }
       ],
       "services": {
