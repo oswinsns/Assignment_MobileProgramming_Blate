@@ -25,6 +25,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Pastikan nama layout XML item kamu benar (misal: item_history_user.xml)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_history, parent, false);
         return new ViewHolder(view);
     }
@@ -32,16 +33,28 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         History item = items.get(position);
-        holder.tvName.setText(item.getName());
-        holder.tvDate.setText(item.getDate());
-        holder.ivUser.setImageResource(item.getImageRes());
 
-        // Logika warna status
+        holder.tvName.setText(item.getName());
         holder.tvStatus.setText(item.getStatus());
-        if(item.getStatus().equals("Liked")) {
-            holder.tvStatus.setTextColor(Color.parseColor("#E91E63")); // Pink
+        holder.tvDate.setText(item.getDate());
+
+        // LOGIC WARNA STATUS
+        if ("Like".equalsIgnoreCase(item.getStatus())) {
+            holder.tvStatus.setTextColor(Color.parseColor("#F48FB1"));
         } else {
-            holder.tvStatus.setTextColor(Color.parseColor("#FBC02D")); // Kuning/Gold
+            holder.tvStatus.setTextColor(Color.parseColor("#FFF59D"));
+        }
+
+        // LOGIC GAMBAR (Ambil dari Drawable berdasarkan nama string)
+        String imageName = item.getImageStr();
+        int defImage = R.drawable.ic_launcher_background; // Gambar cadangan
+
+        if (imageName != null && !imageName.isEmpty()) {
+            int resId = holder.itemView.getContext().getResources().getIdentifier(
+                    imageName.toLowerCase(), "drawable", holder.itemView.getContext().getPackageName());
+            holder.ivAvatar.setImageResource(resId != 0 ? resId : defImage);
+        } else {
+            holder.ivAvatar.setImageResource(defImage);
         }
     }
 
@@ -51,15 +64,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvName, tvDate, tvStatus;
-        ImageView ivUser;
+        TextView tvName, tvStatus, tvDate;
+        ImageView ivAvatar;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            // Sesuaikan ID ini dengan file item_history_user.xml kamu
             tvName = itemView.findViewById(R.id.tvName);
-            tvDate = itemView.findViewById(R.id.tvDate);
             tvStatus = itemView.findViewById(R.id.tvStatus);
-            ivUser = itemView.findViewById(R.id.ivUser);
+            tvDate = itemView.findViewById(R.id.tvDate);
+            ivAvatar = itemView.findViewById(R.id.ivUser);
         }
     }
 }

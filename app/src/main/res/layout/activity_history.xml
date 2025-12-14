@@ -75,9 +75,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Passes"
-                android:textSize="16sp"
-                android:textColor="@android:color/black"/>
+                android:text="Dislikes"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -98,33 +98,36 @@
         app:layout_constraintTop_toBottomOf="@id/llStats">
 
         <TextView
+            android:id="@+id/btnFilterAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All(5)"
-            android:background="@drawable/bg_rounded_yellow"
-            android:backgroundTint="#F0E68C"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="6dp"
-            android:layout_marginEnd="8dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Likes(3)"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/bg_rounded_yellow"
             android:backgroundTint="#E0E0E0"
             android:paddingHorizontal="16dp"
             android:paddingVertical="6dp"
-            android:layout_marginEnd="8dp"/>
+            android:text="All(5)" />
 
         <TextView
+            android:id="@+id/btnFilterLike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dislikes(2)"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/bg_rounded_yellow"
             android:backgroundTint="#E0E0E0"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="6dp"/>
+            android:paddingVertical="6dp"
+            android:text="Likes(3)" />
+
+        <TextView
+            android:id="@+id/btnFilterDislike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_rounded_yellow"
+            android:backgroundTint="#E0E0E0"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="6dp"
+            android:text="Dislikes(2)" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
