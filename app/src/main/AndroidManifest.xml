@@ -16,11 +16,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AOL_BLATE_Mobprog">
         <activity
+            android:name=".ChatProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChatDetailActivity"
             android:exported="false" />
         <activity
             android:name=".DiscoverActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".HistoryActivity"
             android:exported="false" />
@@ -29,7 +32,7 @@
             android:exported="false" />
         <activity
             android:name=".ChatActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".LoginActivity"
             android:exported="false" />

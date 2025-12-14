@@ -1,5 +1,6 @@
 package com.example.aol_blate_mobprog;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -62,6 +63,20 @@ public class ChatDetailActivity extends AppCompatActivity {
 
         // 6. Setup Back Button
         btnBack.setOnClickListener(v -> finish());
+
+        ImageView btnOpenProfile = findViewById(R.id.OpenProfileChatDetailImg);
+
+        if (btnOpenProfile != null) {
+            btnOpenProfile.setOnClickListener(v -> {
+                Intent intent = new Intent(ChatDetailActivity.this, ChatProfileActivity.class);
+
+                // Pass the name shown in the chat header to the profile page
+                // Ensure 'tvName' is the TextView showing the user's name in ChatDetailActivity
+                intent.putExtra("userName", tvName.getText().toString());
+
+                startActivity(intent);
+            });
+        }
     }
 
     private void loadDummyMessages() {
