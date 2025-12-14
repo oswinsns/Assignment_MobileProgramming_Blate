@@ -25,7 +25,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Pastikan nama layout XML item kamu benar (misal: item_history_user.xml)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_history, parent, false);
         return new ViewHolder(view);
     }
@@ -38,16 +37,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.tvStatus.setText(item.getStatus());
         holder.tvDate.setText(item.getDate());
 
-        // LOGIC WARNA STATUS
+        // logic warna status
         if ("Like".equalsIgnoreCase(item.getStatus())) {
             holder.tvStatus.setTextColor(Color.parseColor("#F48FB1"));
         } else {
             holder.tvStatus.setTextColor(Color.parseColor("#FFF59D"));
         }
 
-        // LOGIC GAMBAR (Ambil dari Drawable berdasarkan nama string)
+        // logic gambarnya
         String imageName = item.getImageStr();
-        int defImage = R.drawable.ic_launcher_background; // Gambar cadangan
+        int defImage = R.drawable.ic_launcher_background; //kalo gambarnya null
 
         if (imageName != null && !imageName.isEmpty()) {
             int resId = holder.itemView.getContext().getResources().getIdentifier(
@@ -69,7 +68,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Sesuaikan ID ini dengan file item_history_user.xml kamu
             tvName = itemView.findViewById(R.id.tvName);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             tvDate = itemView.findViewById(R.id.tvDate);

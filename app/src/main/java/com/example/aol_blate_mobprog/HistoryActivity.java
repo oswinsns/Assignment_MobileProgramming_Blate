@@ -21,7 +21,7 @@ public class HistoryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private HistoryAdapter adapter;
 
-    // Master List (Gudang Data) & Display List (Yang Tampil di Layar)
+    // master list buat yang ALL list
     private ArrayList<History> masterList = new ArrayList<>();
     private ArrayList<History> displayList = new ArrayList<>();
 
@@ -32,38 +32,38 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        // 1. Setup Data Dummy (Manual disini, gak pakai Firebase)
+        // pake dummy data manual aja, ga pake firebase yang ini
         setupDummyData();
 
-        // 2. Setup RecyclerView
+        // setup recyclerview
         recyclerView = findViewById(R.id.rvHistory);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // Adapter dihubungkan ke displayList agar isinya bisa berubah-ubah saat difilter
+        // setup adapter
         adapter = new HistoryAdapter(displayList, this);
         recyclerView.setAdapter(adapter);
 
-        // 3. Setup Tombol Filter
+        // setup tombol filter
         btnAll = findViewById(R.id.btnFilterAll);
         btnLike = findViewById(R.id.btnFilterLike);
         btnDislike = findViewById(R.id.btnFilterDislike);
 
-        // 4. Logic Klik Tombol
+        // setup buat logic klik tombol
         btnAll.setOnClickListener(v -> filterList("ALL"));
         btnLike.setOnClickListener(v -> filterList("Like"));
         btnDislike.setOnClickListener(v -> filterList("Dislike"));
 
-        // 5. Setup Navbar
+        // setup navbar
         setupNavbar();
 
-        // Default awal: Tampilkan Semua
+        // default -> tampilkan semua
         filterList("ALL");
 
+        // setup tombol help
         showHelpDialog();
     }
 
     private void setupDummyData() {
-        // Masukkan data dummy manual di sini
-        // Format: Nama, Status (Like/Dislike), Tanggal, NamaFileGambar
+        // add dummy data
         masterList.add(new History("Martin Scorcesse", "Like", "14 Dec 2025", "user_martin"));
         masterList.add(new History("Sophia Monica", "Dislike", "13 Dec 2025", "user_sophia"));
         masterList.add(new History("Made Artha", "Like", "12 Dec 2025", "user_madeartha"));
@@ -72,36 +72,36 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void filterList(String type) {
-        displayList.clear(); // Bersihkan layar dulu
+        displayList.clear(); //clear screen dulu
 
         if (type.equals("ALL")) {
-            // Masukkan semua data dari gudang
+            // masukin data semua
             displayList.addAll(masterList);
             updateButtonColor(btnAll);
         } else {
-            // Saring satu per satu
+            // filtering
             for (History item : masterList) {
                 if (item.getStatus().equalsIgnoreCase(type)) {
                     displayList.add(item);
                 }
             }
-            // Ubah warna tombol sesuai yang diklik
+            // ubah warna
             if (type.equals("Like")) updateButtonColor(btnLike);
             else updateButtonColor(btnDislike);
         }
 
-        // Kabari adapter kalau data berubah
+        // mengabari adapter kalau data berubah
         adapter.notifyDataSetChanged();
     }
 
     private void updateButtonColor(TextView activeButton) {
-        // Warna
+        // warnanya
         int inactiveColor = Color.parseColor("#E0E0E0"); // Abu-abu
         int activeColor = Color.parseColor("#FDD835");   // Kuning
         int textActive = Color.BLACK;
         int textInactive = Color.GRAY;
 
-        // Reset tombol inactive
+        // reset tombol inactive
         setRoundedBackground(btnAll, inactiveColor);
         btnAll.setTextColor(textInactive);
 
@@ -111,22 +111,21 @@ public class HistoryActivity extends AppCompatActivity {
         setRoundedBackground(btnDislike, inactiveColor);
         btnDislike.setTextColor(textInactive);
 
-        // Set tombol active
+        // set tombol active
         setRoundedBackground(activeButton, activeColor);
         activeButton.setTextColor(textActive);
     }
 
-    // --- FUNGSI RAHASIA BIAR TETAP ROUNDED ---
     private void setRoundedBackground(TextView view, int color) {
         android.graphics.drawable.GradientDrawable shape = new android.graphics.drawable.GradientDrawable();
         shape.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(50); // <-- Ini yang bikin rounded! (Ganti angka ini kalau kurang bulat)
-        shape.setColor(color);     // <-- Ini yang ganti warna
-        view.setBackground(shape); // Pasang ke tombol
+        shape.setCornerRadius(50);
+        shape.setColor(color);
+        view.setBackground(shape);
     }
 
     private void setupNavbar() {
-        ImageView navChat = findViewById(R.id.ChatNav); // Pastikan ID ini ada di XML
+        ImageView navChat = findViewById(R.id.ChatNav);
         ImageView navProfile = findViewById(R.id.ProfileNav);
 
         if (navChat != null) navChat.setOnClickListener(v -> {
