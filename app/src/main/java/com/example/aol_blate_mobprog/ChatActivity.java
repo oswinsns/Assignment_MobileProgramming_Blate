@@ -23,7 +23,6 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
     private ArrayList<Chat> chatList;
-    // Gunakan db = FirebaseFirestore.getInstance() karena kita sudah set database default yang baru
     private FirebaseFirestore db;
 
     @Override
@@ -38,7 +37,7 @@ public class ChatActivity extends AppCompatActivity {
         adapter = new ChatAdapter(chatList, this);
         recyclerView.setAdapter(adapter);
 
-        // Inisialisasi Firebase (jika kamu membuat database baru dengan nama spesifik,
+        // inisialisasi database firabasenya
         db = FirebaseFirestore.getInstance();
 
         fetchDataFromFirebase();
@@ -47,7 +46,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void fetchDataFromFirebase() {
-        // Ambil dari collection "person"
+        // ambil dari collection namanya person
         db.collection("person")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -55,22 +54,21 @@ public class ChatActivity extends AppCompatActivity {
                         chatList.clear();
 
                         if (task.getResult().isEmpty()) {
-                            Log.w("FIRESTORE", "Collection person kosong.");
-                            // Handle jika tidak ada data
+                            Log.w("FIRESTORE", "Collection person kosong."); //kalo ga ada isinya
                         }
 
                         for (QueryDocumentSnapshot doc : task.getResult()) {
-                            // Ambil data sesuai kolom di database lama kamu:
+                            // ambil data yang diperlukan
                             String name = doc.getString("name");
-                            String about = doc.getString("about"); // Digunakan sebagai pesan
-                            String profile = doc.getString("profile"); // Digunakan sebagai nama file gambar
+                            String about = doc.getString("about"); // pake aboutnya buat last message
+                            String profile = doc.getString("profile"); // buat profilenya
 
                             // kalau null / ga ada isinya
                             if (name == null) name = "User Tak Dikenal";
                             if (about == null) about = "Halo! Mari ngobrol.";
                             if (profile == null) profile = "default_avatar";
 
-                            // Masukkan ke List
+                            // masukkan ke List
                             chatList.add(new Chat(name, about, profile));
                         }
                         adapter.notifyDataSetChanged();

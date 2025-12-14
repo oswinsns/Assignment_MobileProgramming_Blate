@@ -11,7 +11,13 @@ public class Chat {
         this.imageStr = imageStr;
     }
 
-    public String getName() { return name; }
-    public String getMessage() { return message; }
-    public String getImageStr() { return imageStr; }
+    public String getName() {
+        return name;
+    }
+    public String getMessage() {
+        return message;
+    }
+    public String getImageStr() {
+        return imageStr;
+    }
 }
