@@ -150,7 +150,7 @@ public class HistoryActivity extends AppCompatActivity {
             Button btnClose = dialog.findViewById(R.id.btnCloseDialog);
 
             tvTitle.setText("Activity Log");
-            tvMessage.setText("This page tracks your activity history. Here you can see who you have 'Liked' or 'Passed' previously.");
+            tvMessage.setText("This page tracks your activity history. Here you can see who you have 'Liked' or 'Disliked' previously.");
 
             btnClose.setOnClickListener(view -> dialog.dismiss());
             dialog.show();
