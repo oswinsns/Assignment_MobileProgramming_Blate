@@ -2,19 +2,19 @@ package com.example.aol_blate_mobprog.models;
 
 public class History {
     private String name;
-    private String date;     // Misal: "Today", "Yesterday"
-    private String status;   // "Liked" atau "Passed"
-    private int imageRes;
+    private String status;   // "Like" atau "Dislike"
+    private String date;     // Contoh: "12 Dec 2025"
+    private String imageStr; // Nama file gambar (misal: "user_martin")
 
-    public History(String name, String date, String status, int imageRes) {
+    public History(String name, String status, String date, String imageStr) {
         this.name = name;
-        this.date = date;
         this.status = status;
-        this.imageRes = imageRes;
+        this.date = date;
+        this.imageStr = imageStr;
     }
 
     public String getName() { return name; }
-    public String getDate() { return date; }
     public String getStatus() { return status; }
-    public int getImageRes() { return imageRes; }
+    public String getDate() { return date; }
+    public String getImageStr() { return imageStr; }
 }
