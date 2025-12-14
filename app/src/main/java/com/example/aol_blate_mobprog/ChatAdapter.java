@@ -36,6 +36,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         holder.tvMessage.setText(item.getMessage());
 
         // logic gambar string, masih error, karena tetep harus filenya dari local laptop kita satu satu
+        // coba aja masukin nama gambar sesuai sama imageString yang lu buat, harusnya ga error
         String imageName = item.getImageStr();
         int defImage = R.drawable.ic_launcher_background;
 

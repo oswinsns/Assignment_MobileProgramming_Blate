@@ -4,9 +4,8 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,28 +21,107 @@ public class HistoryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private HistoryAdapter adapter;
 
+    // master list buat yang ALL list
+    private ArrayList<History> masterList = new ArrayList<>();
+    private ArrayList<History> displayList = new ArrayList<>();
+
+    private TextView btnAll, btnLike, btnDislike;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        // Setup Data Dummy
-        ArrayList<History> list = new ArrayList<>();
-        list.add(new History("Maria", "Today", "Liked", R.drawable.ic_launcher_background));
-        list.add(new History("John", "Today", "Passed", R.drawable.ic_launcher_background));
-        list.add(new History("Robert", "Yesterday", "Liked", R.drawable.ic_launcher_background));
-        list.add(new History("Alice", "2 Days Ago", "Liked", R.drawable.ic_launcher_background));
-        list.add(new History("Mike", "Last Week", "Passed", R.drawable.ic_launcher_background));
+        // pake dummy data manual aja, ga pake firebase yang ini
+        setupDummyData();
 
-        // Setup RecyclerView
+        // setup recyclerview
         recyclerView = findViewById(R.id.rvHistory);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new HistoryAdapter(list, this);
+        // setup adapter
+        adapter = new HistoryAdapter(displayList, this);
         recyclerView.setAdapter(adapter);
 
+        // setup tombol filter
+        btnAll = findViewById(R.id.btnFilterAll);
+        btnLike = findViewById(R.id.btnFilterLike);
+        btnDislike = findViewById(R.id.btnFilterDislike);
+
+        // setup buat logic klik tombol
+        btnAll.setOnClickListener(v -> filterList("ALL"));
+        btnLike.setOnClickListener(v -> filterList("Like"));
+        btnDislike.setOnClickListener(v -> filterList("Dislike"));
+
+        // setup navbar
         setupNavbar();
 
+        // default -> tampilkan semua
+        filterList("ALL");
+
+        // setup tombol help
         showHelpDialog();
+    }
+
+    private void setupDummyData() {
+        // add dummy data
+        masterList.add(new History("Martin Scorcesse", "Like", "14 Dec 2025", "user_martin"));
+        masterList.add(new History("Sophia Monica", "Dislike", "13 Dec 2025", "user_sophia"));
+        masterList.add(new History("Made Artha", "Like", "12 Dec 2025", "user_madeartha"));
+        masterList.add(new History("Rina Wulandari", "Like", "10 Dec 2025", "user_rinawulandari"));
+        masterList.add(new History("Joji Similikiti", "Dislike", "08 Dec 2025", "user_joji"));
+    }
+
+    private void filterList(String type) {
+        displayList.clear(); //clear screen dulu
+
+        if (type.equals("ALL")) {
+            // masukin data semua
+            displayList.addAll(masterList);
+            updateButtonColor(btnAll);
+        } else {
+            // filtering
+            for (History item : masterList) {
+                if (item.getStatus().equalsIgnoreCase(type)) {
+                    displayList.add(item);
+                }
+            }
+            // ubah warna
+            if (type.equals("Like")) updateButtonColor(btnLike);
+            else updateButtonColor(btnDislike);
+        }
+
+        // mengabari adapter kalau data berubah
+        adapter.notifyDataSetChanged();
+    }
+
+    private void updateButtonColor(TextView activeButton) {
+        // warnanya
+        int inactiveColor = Color.parseColor("#E0E0E0"); // Abu-abu
+        int activeColor = Color.parseColor("#FDD835");   // Kuning
+        int textActive = Color.BLACK;
+        int textInactive = Color.GRAY;
+
+        // reset tombol inactive
+        setRoundedBackground(btnAll, inactiveColor);
+        btnAll.setTextColor(textInactive);
+
+        setRoundedBackground(btnLike, inactiveColor);
+        btnLike.setTextColor(textInactive);
+
+        setRoundedBackground(btnDislike, inactiveColor);
+        btnDislike.setTextColor(textInactive);
+
+        // set tombol active
+        setRoundedBackground(activeButton, activeColor);
+        activeButton.setTextColor(textActive);
+    }
+
+    private void setRoundedBackground(TextView view, int color) {
+        android.graphics.drawable.GradientDrawable shape = new android.graphics.drawable.GradientDrawable();
+        shape.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(50);
+        shape.setColor(color);
+        view.setBackground(shape);
     }
 
     private void setupNavbar() {
@@ -51,17 +129,13 @@ public class HistoryActivity extends AppCompatActivity {
         ImageView navProfile = findViewById(R.id.ProfileNav);
         ImageView navDiscover = findViewById(R.id.DiscoverNav);
 
-        // ImageView navHome = findViewById(R.id.nav_home);
-
-        navChat.setOnClickListener(v -> {
-            Intent intent = new Intent(HistoryActivity.this, ChatActivity.class);
-            startActivity(intent);
+        if (navChat != null) navChat.setOnClickListener(v -> {
+            startActivity(new Intent(this, ChatActivity.class));
             finishAffinity();
         });
 
-        navProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(HistoryActivity.this, ProfileActivity.class);
-            startActivity(intent);
+        if (navProfile != null) navProfile.setOnClickListener(v -> {
+            startActivity(new Intent(this, ProfileActivity.class));
             finishAffinity();
         });
 
@@ -71,7 +145,6 @@ public class HistoryActivity extends AppCompatActivity {
             finishAffinity();
         });
     }
-
     private void showHelpDialog(){
         ImageView btnHelp = findViewById(R.id.btnHelp);
         btnHelp.setOnClickListener(v->{
@@ -84,7 +157,7 @@ public class HistoryActivity extends AppCompatActivity {
             Button btnClose = dialog.findViewById(R.id.btnCloseDialog);
 
             tvTitle.setText("Activity Log");
-            tvMessage.setText("This page tracks your activity history. Here you can see who you have 'Liked' or 'Passed' previously.");
+            tvMessage.setText("This page tracks your activity history. Here you can see who you have 'Liked' or 'Disliked' previously.");
 
             btnClose.setOnClickListener(view -> dialog.dismiss());
             dialog.show();

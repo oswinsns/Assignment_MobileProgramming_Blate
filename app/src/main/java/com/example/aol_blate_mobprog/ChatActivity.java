@@ -41,6 +41,7 @@ public class ChatActivity extends AppCompatActivity {
         adapter = new ChatAdapter(chatList, this);
         recyclerView.setAdapter(adapter);
 
+        // inisialisasi database firabasenya
         db = FirebaseFirestore.getInstance();
         firestoreManager = FirestoreManager.getInstance();
 
