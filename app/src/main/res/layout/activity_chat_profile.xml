@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/btnBackFromProfile"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_launcher_foreground"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                app:tint="#000000" /> <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:textSize="22sp"
+            android:textColor="#000000"
+            android:layout_centerInParent="true"
+            android:textStyle="normal"/>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/ivProfilePic"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/ic_launcher_background"
+            android:background="@drawable/circle_background"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/tvProfileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textSize="24sp"
+            android:textColor="#000000"
+            android:textStyle="normal"/>
+
+        <TextView
+            android:id="@+id/tvProfileGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gender: -"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="24dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="About"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvProfileAbout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#F0E68C"
+                android:padding="20dp"
+                android:text="..."
+                android:textColor="#000000"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hobbies"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvProfileHobbies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#F0E68C"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="10dp"
+                android:text="-"
+                android:textColor="#000000"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="start">
+
+            <TextView
+                android:id="@+id/tvProfileAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Age: -"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvProfileReligion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Religion: -"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvProfileDomicile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Domicile: -"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvProfileJob"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Current Job: -"
+                android:textSize="16sp"
+                android:textColor="#000000"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

@@ -9,14 +9,17 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.aol_blate_mobprog.models.Chat;
+import com.example.aol_blate_mobprog.models.User;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -24,6 +27,7 @@ public class ChatActivity extends AppCompatActivity {
     private ChatAdapter adapter;
     private ArrayList<Chat> chatList;
     private FirebaseFirestore db;
+    private FirestoreManager firestoreManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,7 @@ public class ChatActivity extends AppCompatActivity {
 
         // inisialisasi database firabasenya
         db = FirebaseFirestore.getInstance();
+        firestoreManager = FirestoreManager.getInstance();
 
         fetchDataFromFirebase();
         setupNavbar();
@@ -46,34 +51,68 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void fetchDataFromFirebase() {
-        // ambil dari collection namanya person
+        firestoreManager.getCurrentUser(new FirestoreManager.FirestoreCallback() {
+            @Override
+            public void onSuccess(Object result) { // <--- CHANGE THIS FROM 'User user' TO 'Object result'
+
+                // 1. Cast the Object to User
+                User user = (User) result;
+
+                // 2. Now you can use 'user' normally
+                List<String> acceptedIds = user.getAccepted();
+
+                if (acceptedIds == null || acceptedIds.isEmpty()) {
+                    chatList.clear();
+                    adapter.notifyDataSetChanged();
+                    Log.d("CHAT", "User hasn't accepted anyone yet.");
+                    return;
+                }
+
+                fetchMatches(acceptedIds);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(ChatActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Helper method
+    private void fetchMatches(List<String> acceptedIds) {
+        Log.d("CHAT_DEBUG", "I am looking for these IDs: " + acceptedIds.toString());
+
         db.collection("person")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         chatList.clear();
-
-                        if (task.getResult().isEmpty()) {
-                            Log.w("FIRESTORE", "Collection person kosong."); //kalo ga ada isinya
-                        }
+                        Log.d("CHAT_DEBUG", "I found " + task.getResult().size() + " people in the 'person' collection.");
 
                         for (QueryDocumentSnapshot doc : task.getResult()) {
-                            // ambil data yang diperlukan
-                            String name = doc.getString("name");
-                            String about = doc.getString("about"); // pake aboutnya buat last message
-                            String profile = doc.getString("profile"); // buat profilenya
+                            String personId = doc.getId();
+                            Log.d("CHAT_DEBUG", "Checking Person ID: '" + personId + "'");
 
-                            // kalau null / ga ada isinya
-                            if (name == null) name = "User Tak Dikenal";
-                            if (about == null) about = "Halo! Mari ngobrol.";
-                            if (profile == null) profile = "default_avatar";
+                            // THE CRITICAL CHECK
+                            if (acceptedIds.contains(personId)) {
+                                Log.d("CHAT_DEBUG", "MATCH FOUND! Adding " + personId);
 
-                            // masukkan ke List
-                            chatList.add(new Chat(name, about, profile));
+                                String name = doc.getString("name");
+                                String about = doc.getString("about");
+                                String profile = doc.getString("profile");
+
+                                if (name == null) name = "Unknown User";
+                                if (about == null) about = "Let's start chatting!";
+                                if (profile == null) profile = "avatar_1";
+
+                                chatList.add(new Chat(name, about, profile));
+                            } else {
+                                Log.d("CHAT_DEBUG", "No match for " + personId);
+                            }
                         }
                         adapter.notifyDataSetChanged();
                     } else {
-                        Log.e("FIRESTORE", "Gagal ambil data: ", task.getException());
+                        Log.e("CHAT_DEBUG", "Error fetching people: ", task.getException());
                     }
                 });
     }
@@ -81,6 +120,7 @@ public class ChatActivity extends AppCompatActivity {
     private void setupNavbar() {
         ImageView navProfile = findViewById(R.id.ProfileNav);
         ImageView navHistory = findViewById(R.id.HistoryNav);
+        ImageView navDiscover = findViewById(R.id.DiscoverNav); // Ensure this ID exists in your XML
 
         if(navProfile != null) navProfile.setOnClickListener(v-> {
             startActivity(new Intent(this, ProfileActivity.class));
@@ -88,26 +128,32 @@ public class ChatActivity extends AppCompatActivity {
         if(navHistory != null) navHistory.setOnClickListener(v->{
             startActivity(new Intent(this, HistoryActivity.class));
         });
+        if(navDiscover != null) navDiscover.setOnClickListener(v->{
+            startActivity(new Intent(this, DiscoverActivity.class));
+        });
     }
+
     private void showHelpDialog(){
         ImageView btnHelp = findViewById(R.id.btnHelp);
-        btnHelp.setOnClickListener(v->{
-            Dialog dialog = new Dialog(this);
-            dialog.setContentView(R.layout.dialog_help);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if (btnHelp != null) { // Added null check for safety
+            btnHelp.setOnClickListener(v->{
+                Dialog dialog = new Dialog(this);
+                dialog.setContentView(R.layout.dialog_help);
+                if (dialog.getWindow() != null)
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-            TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
-            TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
-            Button btnClose = dialog.findViewById(R.id.btnCloseDialog);
+                TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+                TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+                Button btnClose = dialog.findViewById(R.id.btnCloseDialog);
 
-            tvTitle.setText("Chat Safety");
-            tvMessage.setText("Stay polite when chatting. Never share financial information or passwords with anyone.");
+                tvTitle.setText("Chat Safety");
+                tvMessage.setText("Stay polite when chatting. Never share financial information or passwords with anyone.");
 
-            btnClose.setOnClickListener(view -> {
-                dialog.dismiss();
+                btnClose.setOnClickListener(view -> {
+                    dialog.dismiss();
+                });
+                dialog.show();
             });
-            dialog.show();
-        });
-
+        }
     }
 }

@@ -127,6 +127,7 @@ public class HistoryActivity extends AppCompatActivity {
     private void setupNavbar() {
         ImageView navChat = findViewById(R.id.ChatNav);
         ImageView navProfile = findViewById(R.id.ProfileNav);
+        ImageView navDiscover = findViewById(R.id.DiscoverNav);
 
         if (navChat != null) navChat.setOnClickListener(v -> {
             startActivity(new Intent(this, ChatActivity.class));
@@ -135,6 +136,12 @@ public class HistoryActivity extends AppCompatActivity {
 
         if (navProfile != null) navProfile.setOnClickListener(v -> {
             startActivity(new Intent(this, ProfileActivity.class));
+            finishAffinity();
+        });
+
+        navDiscover.setOnClickListener(v -> {
+            Intent intent = new Intent(HistoryActivity.this, DiscoverActivity.class);
+            startActivity(intent);
             finishAffinity();
         });
     }

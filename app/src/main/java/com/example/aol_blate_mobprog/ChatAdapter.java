@@ -1,6 +1,7 @@
 package com.example.aol_blate_mobprog;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             // datanya kosong dari Firebase, pakai default
             holder.ivAvatar.setImageResource(defImage);
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ChatDetailActivity.class);
+            intent.putExtra("userName", item.getName()); // Pass the name
+            context.startActivity(intent);
+        });
     }
 
     @Override
