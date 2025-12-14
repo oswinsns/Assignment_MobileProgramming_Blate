@@ -1,9 +1,13 @@
 package com.example.aol_blate_mobprog;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +54,7 @@ public class DiscoverActivity extends AppCompatActivity {
         if (btnDislike != null) btnDislike.setOnClickListener(v -> handleSwipe(false));
 
         setupNavbar();
+        showHelpDialog();
         loadInitialData();
     }
 
@@ -174,5 +179,34 @@ public class DiscoverActivity extends AppCompatActivity {
         if (navProfile != null) navProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
         if (navHistory != null) navHistory.setOnClickListener(v -> startActivity(new Intent(this, HistoryActivity.class)));
         if (navChat != null) navChat.setOnClickListener(v -> startActivity(new Intent(this, ChatActivity.class)));
+    }
+
+    // --- FUNGSI POPUP HELP (BARU) ---
+    private void showHelpDialog(){
+        ImageView btnHelp = findViewById(R.id.btnHelp); // ID harus sama dengan di XML
+
+        if(btnHelp != null) {
+            btnHelp.setOnClickListener(v -> {
+                Dialog dialog = new Dialog(this);
+                dialog.setContentView(R.layout.dialog_help);
+
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+
+                TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+                TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+                Button btnClose = dialog.findViewById(R.id.btnCloseDialog);
+
+                // Pesan khusus untuk halaman Discover
+                if (tvTitle != null) tvTitle.setText("Discover People");
+                if (tvMessage != null) tvMessage.setText("Tap 'Like' if you're interested or 'Dislike' to pass. Swipe through profiles to find your match!");
+
+                if (btnClose != null) {
+                    btnClose.setOnClickListener(view -> dialog.dismiss());
+                }
+                dialog.show();
+            });
+        }
     }
 }

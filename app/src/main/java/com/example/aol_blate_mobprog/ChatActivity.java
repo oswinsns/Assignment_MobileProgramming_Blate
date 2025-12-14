@@ -53,12 +53,10 @@ public class ChatActivity extends AppCompatActivity {
     private void fetchDataFromFirebase() {
         firestoreManager.getCurrentUser(new FirestoreManager.FirestoreCallback() {
             @Override
-            public void onSuccess(Object result) { // <--- CHANGE THIS FROM 'User user' TO 'Object result'
+            public void onSuccess(Object result) {
 
-                // 1. Cast the Object to User
                 User user = (User) result;
 
-                // 2. Now you can use 'user' normally
                 List<String> acceptedIds = user.getAccepted();
 
                 if (acceptedIds == null || acceptedIds.isEmpty()) {
@@ -93,7 +91,7 @@ public class ChatActivity extends AppCompatActivity {
                             String personId = doc.getId();
                             Log.d("CHAT_DEBUG", "Checking Person ID: '" + personId + "'");
 
-                            // THE CRITICAL CHECK
+                            // cek dulu penting
                             if (acceptedIds.contains(personId)) {
                                 Log.d("CHAT_DEBUG", "MATCH FOUND! Adding " + personId);
 
@@ -120,7 +118,7 @@ public class ChatActivity extends AppCompatActivity {
     private void setupNavbar() {
         ImageView navProfile = findViewById(R.id.ProfileNav);
         ImageView navHistory = findViewById(R.id.HistoryNav);
-        ImageView navDiscover = findViewById(R.id.DiscoverNav); // Ensure this ID exists in your XML
+        ImageView navDiscover = findViewById(R.id.DiscoverNav);
 
         if(navProfile != null) navProfile.setOnClickListener(v-> {
             startActivity(new Intent(this, ProfileActivity.class));
@@ -135,7 +133,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void showHelpDialog(){
         ImageView btnHelp = findViewById(R.id.btnHelp);
-        if (btnHelp != null) { // Added null check for safety
+        if (btnHelp != null) {
             btnHelp.setOnClickListener(v->{
                 Dialog dialog = new Dialog(this);
                 dialog.setContentView(R.layout.dialog_help);
