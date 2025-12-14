@@ -20,7 +20,7 @@ public class ChatProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_profile);
 
-        // 1. Initialize Views
+        // inisialisasi
         btnBack = findViewById(R.id.btnBackFromProfile);
         ivProfile = findViewById(R.id.ivProfilePic);
         tvName = findViewById(R.id.tvProfileName);
@@ -34,8 +34,7 @@ public class ChatProfileActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        // 2. Get Data passed from ChatDetailActivity
-        // We expect "userName" to be passed in the Intent
+        //dapet nama dari chat detail activity
         String nameToFind = getIntent().getStringExtra("userName");
 
         if (nameToFind != null) {
@@ -45,19 +44,18 @@ public class ChatProfileActivity extends AppCompatActivity {
             Toast.makeText(this, "No user data received", Toast.LENGTH_SHORT).show();
         }
 
-        // 3. Back Button
         btnBack.setOnClickListener(v -> finish());
     }
 
     private void loadPersonData(String name) {
-        // Find the person in the "person" collection by Name
+        // cari orangnya di database collection person
         db.collection("person")
                 .whereEqualTo("name", name)
                 .limit(1)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     if (!querySnapshot.isEmpty()) {
-                        // Convert the document to a Person object
+                        // convert ke object person
                         Person p = querySnapshot.getDocuments().get(0).toObject(Person.class);
                         if (p != null) {
                             updateUI(p);
@@ -70,26 +68,24 @@ public class ChatProfileActivity extends AppCompatActivity {
     }
 
     private void updateUI(Person p) {
-        // Gender Logic
+        // logic gender
         String genderStr = p.isGender() ? "Male" : "Female";
         tvGender.setText("Gender: " + genderStr);
-
-        // Basic Info
         tvAbout.setText(p.getAbout());
         tvReligion.setText("Religion: " + p.getReligion());
         tvDomicile.setText("Domicile: " + p.getDomicile());
         tvJob.setText("Current Job: " + p.getCurrent_job());
 
-        // Age Logic (Simple display of DOB for now, or calc age)
-        tvAge.setText("Age: " + p.getDob()); // You can change this to "24" if you want hardcoded for now
+        //hitung umurnya
+        tvAge.setText("Age: " + p.getDob());
 
-        // Hobbies
+        // logic hobby
         if (p.getHobbies() != null) {
             String hobbiesStr = p.getHobbies().toString().replace("[", "").replace("]", "");
             tvHobbies.setText(hobbiesStr);
         }
 
-        // Image Logic
+        // logic image
         String profileName = p.getProfile();
         int resId = 0;
         if (profileName != null && !profileName.isEmpty()) {

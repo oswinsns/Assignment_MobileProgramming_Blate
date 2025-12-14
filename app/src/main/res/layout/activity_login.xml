@@ -8,7 +8,6 @@
     android:background="@drawable/pinkyellowbackground"
     tools:context=".MainActivity">
 
-    <!-- opacity / transparency -->
 
     <ImageView
         android:id="@+id/topBlob"

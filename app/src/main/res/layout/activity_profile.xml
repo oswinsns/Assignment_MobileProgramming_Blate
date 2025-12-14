@@ -91,7 +91,7 @@
                 android:id="@+id/LabelAboutTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="12dp"
                 android:text="About"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
@@ -123,22 +123,23 @@
                 android:id="@+id/HobbiesContainerLL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/LabelHobbiesTV">
+                app:layout_constraintTop_toBottomOf="@id/LabelHobbiesTV"
+                tools:layout_editor_absoluteX="24dp">
 
                 <TextView
                     android:id="@+id/Hobby1ProfileTV"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
+                    android:minWidth="80dp"
                     android:layout_height="40dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/bg_rounded_yellow" />
+                    android:background="@drawable/bg_rounded_yellow"
+                    android:gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
 
-                <TextView
-                    android:id="@+id/Hobby2ProfileTV"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_rounded_yellow" />
             </LinearLayout>
 
             <TextView

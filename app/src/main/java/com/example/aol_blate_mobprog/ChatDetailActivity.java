@@ -30,27 +30,27 @@ public class ChatDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_detail);
 
-        // 1. Initialize Views
+        // inisialisasi
         recyclerView = findViewById(R.id.rvMessages);
         etInput = findViewById(R.id.etMessageInput);
         btnSend = findViewById(R.id.btnSend);
         btnBack = findViewById(R.id.btnBack);
         tvName = findViewById(R.id.tvChatName);
 
-        // 2. Get Name from Intent (Passed from ChatActivity)
+        // get nama dari chatactivity
         name = getIntent().getStringExtra("userName");
         if(name != null) tvName.setText(name);
 
-        // 3. Setup RecyclerView
+        // setup rv
         messageList = new ArrayList<>();
         adapter = new MessageAdapter(messageList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        // 4. Load Hardcoded Data
+        // 4. load dummy hardcoded Data
         loadDummyMessages();
 
-        // 5. Setup Send Button
+        //setup button send
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +61,7 @@ public class ChatDetailActivity extends AppCompatActivity {
             }
         });
 
-        // 6. Setup Back Button
+        // setup button back
         btnBack.setOnClickListener(v -> finish());
 
         ImageView btnOpenProfile = findViewById(R.id.OpenProfileChatDetailImg);
@@ -69,9 +69,6 @@ public class ChatDetailActivity extends AppCompatActivity {
         if (btnOpenProfile != null) {
             btnOpenProfile.setOnClickListener(v -> {
                 Intent intent = new Intent(ChatDetailActivity.this, ChatProfileActivity.class);
-
-                // Pass the name shown in the chat header to the profile page
-                // Ensure 'tvName' is the TextView showing the user's name in ChatDetailActivity
                 intent.putExtra("userName", tvName.getText().toString());
 
                 startActivity(intent);
@@ -80,7 +77,6 @@ public class ChatDetailActivity extends AppCompatActivity {
     }
 
     private void loadDummyMessages() {
-        // Matches your screenshot
         messageList.add(new Message("Hey! Saw your profile and you seem really cool. What are you up to this weekend?", "10:30 AM", false));
         messageList.add(new Message("Hey " + name + " ! Thanks 😊 Just chilling this weekend. Maybe some hiking. How about you?", "10:32 AM", true));
         messageList.add(new Message("Hiking sounds awesome! I was thinking of checking out that new cafe downtown. We should go sometime!", "10:33 AM", false));
@@ -89,17 +85,13 @@ public class ChatDetailActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String content) {
-        // Get current time
         String currentTime = new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(new Date());
 
-        // Add new message (isSentByMe = true)
         messageList.add(new Message(content, currentTime, true));
 
-        // Update list and scroll to bottom
         adapter.notifyItemInserted(messageList.size() - 1);
         recyclerView.smoothScrollToPosition(messageList.size() - 1);
 
-        // Clear input
         etInput.setText("");
     }
 }

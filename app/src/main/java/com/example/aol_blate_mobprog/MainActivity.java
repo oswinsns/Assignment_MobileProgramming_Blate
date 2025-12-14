@@ -3,6 +3,7 @@ package com.example.aol_blate_mobprog;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences; // Import Penting
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -21,7 +22,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText email;
     EditText password;
-    EditText confirmPassword;   // NEW
+    EditText confirmPassword;
     CheckBox chkTerms;
 
     Button loginButton;
@@ -52,6 +52,13 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        //bersihin memory saat aplikasi baru dibuka
+        //mastiin biar awal" run ga ada datanya
+        SharedPreferences prefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear(); // hapus semua data yang tersimpan sebelumnya
+        editor.apply();
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -60,15 +67,15 @@ public class MainActivity extends AppCompatActivity {
 
         checkAndRequestPermissions();
 
-        // View references
+        //inisialisasi
         email = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextNumberPassword2);
-        confirmPassword = findViewById(R.id.editTextConfirmPassword); // NEW
+        confirmPassword = findViewById(R.id.editTextConfirmPassword);
         chkTerms = findViewById(R.id.checkBox);
 
         TextView tv = findViewById(R.id.tvlinktoPage);
 
-        // Clickable link
+        //bisa ke login
         String text = "Already Have an Account? Login";
         SpannableString ss = new SpannableString(text);
 
@@ -105,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
             boolean isValid = true;
 
-            // EMAIL CHECK
+            // logic check email
             if (!emailInput.contains("@gmail.com")) {
                 email.setError("Email must contain @gmail.com");
                 email.startAnimation(shake);
@@ -115,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 email.getBackground().clearColorFilter();
             }
 
-            // PASSWORD LENGTH CHECK
+            // logic check password
             if (passwordInput.length() < 8) {
                 password.setError("Password must be at least 8 characters");
                 password.startAnimation(shake);
@@ -125,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 password.getBackground().clearColorFilter();
             }
 
-            // CONFIRM PASSWORD MATCH CHECK
+            // logic confirm password
             if (!passwordInput.equals(confirmPasswordInput)) {
                 confirmPassword.setError("Passwords do not match");
                 confirmPassword.startAnimation(shake);
@@ -135,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 confirmPassword.getBackground().clearColorFilter();
             }
 
-            // TERMS CHECK
+            //terms n condition
             if (!isTermsChecked) {
                 chkTerms.startAnimation(shake);
                 Toast.makeText(MainActivity.this, "You must agree to the terms and conditions", Toast.LENGTH_SHORT).show();
@@ -144,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
 
             if (!isValid) return;
 
-            // SUCCESS → MOVE TO NEXT ACTIVITY
             Intent intent = new Intent(MainActivity.this, AddProfileDetailActivity.class);
             intent.putExtra("email", emailInput);
             startActivity(intent);
@@ -152,26 +158,21 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "🎉 Registration Successful!", Toast.LENGTH_LONG).show();
         });
 
-        // Help popup
         showHelpDialog();
     }
 
     private void checkAndRequestPermissions() {
-        // Logic for Android 13+ (API 33 and above)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
                     != PackageManager.PERMISSION_GRANTED) {
-                // Request access to Photos
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_MEDIA_IMAGES},
                         PERMISSION_REQUEST_CODE);
             }
         }
-        // Logic for Android 12 and below
         else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
-                // Request access to Storage
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                         PERMISSION_REQUEST_CODE);
@@ -192,20 +193,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void showHelpDialog() {
         btnHelp = findViewById(R.id.btnHelp);
-        btnHelp.setOnClickListener(v -> {
-            Dialog dialog = new Dialog(this);
-            dialog.setContentView(R.layout.dialog_help);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if(btnHelp != null) { // Safety check
+            btnHelp.setOnClickListener(v -> {
+                Dialog dialog = new Dialog(this);
+                dialog.setContentView(R.layout.dialog_help);
+                if (dialog.getWindow() != null) {
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
 
-            TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
-            TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
-            Button btnClose = dialog.findViewById(R.id.btnCloseDialog);
+                TextView tvTitle = dialog.findViewById(R.id.tvDialogTitle);
+                TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
+                Button btnClose = dialog.findViewById(R.id.btnCloseDialog);
 
-            tvTitle.setText("Registration Info");
-            tvMessage.setText("Create your new account here. Please use a valid email address and create a strong password (at least 8 characters).");
+                if(tvTitle != null) tvTitle.setText("Registration Info");
+                if(tvMessage != null) tvMessage.setText("Create your new account here. Please use a valid email address and create a strong password (at least 8 characters).");
 
-            btnClose.setOnClickListener(view -> dialog.dismiss());
-            dialog.show();
-        });
+                if(btnClose != null) btnClose.setOnClickListener(view -> dialog.dismiss());
+                dialog.show();
+            });
+        }
     }
 }
