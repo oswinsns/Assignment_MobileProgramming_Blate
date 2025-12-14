@@ -1,17 +1,23 @@
-package com.example.aol_blate_mobprog.models; // Sesuaikan package
+package com.example.aol_blate_mobprog.models;
 
 public class Chat {
     private String name;
-    private String message;
-    private int imageRes;
+    private String message; // message ini diisi sama kolom about
+    private String imageStr; // jujur ini masi error gatau ngapa
 
-    public Chat(String name, String message, int imageRes) {
+    public Chat(String name, String message, String imageStr) {
         this.name = name;
         this.message = message;
-        this.imageRes = imageRes;
+        this.imageStr = imageStr;
     }
 
-    public String getName() { return name; }
-    public String getMessage() { return message; }
-    public int getImageRes() { return imageRes; }
+    public String getName() {
+        return name;
+    }
+    public String getMessage() {
+        return message;
+    }
+    public String getImageStr() {
+        return imageStr;
+    }
 }

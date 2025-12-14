@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,61 +13,82 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.aol_blate_mobprog.models.Chat;
-
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 
 public class ChatActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ChatAdapter adapter;
+    private ArrayList<Chat> chatList;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        // 1. Setup Data Dummy (Sesuai Gambar)
-        ArrayList<Chat> items = new ArrayList<>();
-        items.add(new Chat("Sophia", "Hey! How's your day going?", R.drawable.ic_launcher_background));
-        items.add(new Chat("Ethan", "I'm excited to meet you!", R.drawable.ic_launcher_background));
-        items.add(new Chat("Olivia", "Just finished a great workout.", R.drawable.ic_launcher_background));
-        items.add(new Chat("Noah", "What are your plans for the weekend?", R.drawable.ic_launcher_background));
-        items.add(new Chat("Ava", "I love your profile!", R.drawable.ic_launcher_background));
-        items.add(new Chat("Liam", "Let's grab coffee sometime.", R.drawable.ic_launcher_background));
-
-        // 2. Setup RecyclerView
+        chatList = new ArrayList<>();
         recyclerView = findViewById(R.id.rvChat);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ChatAdapter(items, this);
+
+        adapter = new ChatAdapter(chatList, this);
         recyclerView.setAdapter(adapter);
 
-        // 3. Navbar Logic (Tombol Pindah Halaman)
-        setupNavbar();
+        // inisialisasi database firabasenya
+        db = FirebaseFirestore.getInstance();
 
-        //buat button help
+        fetchDataFromFirebase();
+        setupNavbar();
         showHelpDialog();
+    }
+
+    private void fetchDataFromFirebase() {
+        // ambil dari collection namanya person
+        db.collection("person")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        chatList.clear();
+
+                        if (task.getResult().isEmpty()) {
+                            Log.w("FIRESTORE", "Collection person kosong."); //kalo ga ada isinya
+                        }
+
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            // ambil data yang diperlukan
+                            String name = doc.getString("name");
+                            String about = doc.getString("about"); // pake aboutnya buat last message
+                            String profile = doc.getString("profile"); // buat profilenya
+
+                            // kalau null / ga ada isinya
+                            if (name == null) name = "User Tak Dikenal";
+                            if (about == null) about = "Halo! Mari ngobrol.";
+                            if (profile == null) profile = "default_avatar";
+
+                            // masukkan ke List
+                            chatList.add(new Chat(name, about, profile));
+                        }
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Log.e("FIRESTORE", "Gagal ambil data: ", task.getException());
+                    }
+                });
     }
 
     private void setupNavbar() {
         ImageView navProfile = findViewById(R.id.ProfileNav);
         ImageView navHistory = findViewById(R.id.HistoryNav);
 
-        navProfile.setOnClickListener(v-> {
-            Intent intent = new Intent(this, ProfileActivity.class);
-            startActivity(intent);
-            finishAffinity(); // Agar kalau diback tidak numpuk
+        if(navProfile != null) navProfile.setOnClickListener(v-> {
+            startActivity(new Intent(this, ProfileActivity.class));
         });
-
-        navHistory.setOnClickListener(v->{
-            Intent intent = new Intent(this, HistoryActivity.class);
-            startActivity(intent);
-            finishAffinity();
+        if(navHistory != null) navHistory.setOnClickListener(v->{
+            startActivity(new Intent(this, HistoryActivity.class));
         });
-
     }
-
     private void showHelpDialog(){
         ImageView btnHelp = findViewById(R.id.btnHelp);
         btnHelp.setOnClickListener(v->{
@@ -89,6 +110,4 @@ public class ChatActivity extends AppCompatActivity {
         });
 
     }
-
-
 }

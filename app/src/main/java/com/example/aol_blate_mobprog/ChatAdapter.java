@@ -6,12 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.aol_blate_mobprog.models.Chat;
-
 import java.util.ArrayList;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
@@ -20,8 +17,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     Context context;
 
     public ChatAdapter(ArrayList<Chat> items, Context context) {
-            this.items = items;
-            this.context = context;
+        this.items = items;
+        this.context = context;
     }
 
     @NonNull
@@ -36,7 +33,25 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         Chat item = items.get(position);
         holder.tvName.setText(item.getName());
         holder.tvMessage.setText(item.getMessage());
-        holder.ivAvatar.setImageResource(item.getImageRes());
+
+        // logic gambar string, masih error, karena tetep harus filenya dari local laptop kita satu satu
+        // coba aja masukin nama gambar sesuai sama imageString yang lu buat, harusnya ga error
+        String imageName = item.getImageStr();
+        int defImage = R.drawable.ic_launcher_background;
+
+        if (imageName != null && !imageName.isEmpty()) {
+            // pakae .toLowerCase() karena nama file drawable harus huruf kecil semua
+            int resId = holder.itemView.getContext().getResources().getIdentifier(
+                    imageName.toLowerCase(),
+                    "drawable",
+                    holder.itemView.getContext().getPackageName()
+            );
+            // pasang gambar, jika resId 0 / ga nemu, pakai default
+            holder.ivAvatar.setImageResource(resId != 0 ? resId : defImage);
+        } else {
+            // datanya kosong dari Firebase, pakai default
+            holder.ivAvatar.setImageResource(defImage);
+        }
     }
 
     @Override
