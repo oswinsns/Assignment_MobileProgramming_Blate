@@ -49,6 +49,7 @@ public class HistoryActivity extends AppCompatActivity {
     private void setupNavbar() {
         ImageView navChat = findViewById(R.id.ChatNav);
         ImageView navProfile = findViewById(R.id.ProfileNav);
+        ImageView navDiscover = findViewById(R.id.DiscoverNav);
 
         // ImageView navHome = findViewById(R.id.nav_home);
 
@@ -64,6 +65,11 @@ public class HistoryActivity extends AppCompatActivity {
             finishAffinity();
         });
 
+        navDiscover.setOnClickListener(v -> {
+            Intent intent = new Intent(HistoryActivity.this, DiscoverActivity.class);
+            startActivity(intent);
+            finishAffinity();
+        });
     }
 
     private void showHelpDialog(){

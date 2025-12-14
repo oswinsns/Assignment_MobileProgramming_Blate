@@ -78,7 +78,8 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:src="@drawable/discover_nav_image" />
+            android:src="@drawable/discover_nav_image"
+            app:tint="#FF4081"/>
 
         <ImageView
             android:id="@+id/ChatNav"
@@ -92,8 +93,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
-            android:src="@drawable/history_nav_image"
-            app:tint="#FF4081" />
+            android:src="@drawable/history_nav_image" />
 
         <ImageView
             android:id="@+id/ProfileNav"

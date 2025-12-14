@@ -1,182 +1,178 @@
 package com.example.aol_blate_mobprog;
 
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.bumptech.glide.Glide;
 import com.example.aol_blate_mobprog.models.Person;
 import com.example.aol_blate_mobprog.models.User;
-import com.example.aol_blate_mobprog.FirestoreManager;
-import com.example.aol_blate_mobprog.ImageHelper;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class DiscoverActivity extends AppCompatActivity {
 
-    // Views
-    private TextView tvNameAge, tvJob, tvLocation, tvTitle;
-    private ImageView ivProfile;
-    private Button btnLike, btnDislike;
-    private View cardLayout;
-
-    // Data
-    private List<Person> candidateList = new ArrayList<>();
-    private int currentIndex = 0;
     private FirestoreManager firestoreManager;
-    private boolean currentUserGender; // To store the logged-in user's gender
+    private List<Person> peopleList;
+    private int currentIndex = 0;
+
+    // UI Components
+    private ImageView profileImage;
+    private TextView tvName, tvJob, tvNoData; // Added tvNoData (Optional)
+    private View btnLike, btnDislike;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_discover);
 
-        // 1. Initialize Views
-        // Note: Because we used <include>, we find views directly if IDs are unique
-        tvNameAge = findViewById(R.id.NameageCardTV);
+        firestoreManager = FirestoreManager.getInstance();
+        peopleList = new ArrayList<>();
+
+        // 1. Initialize Views (Make sure these IDs match your XML!)
+        profileImage = findViewById(R.id.ProfileCardImg);
+        tvName = findViewById(R.id.NameageCardTV);
         tvJob = findViewById(R.id.JobCardTV);
-        tvLocation = findViewById(R.id.LocationCardTV);
-        ivProfile = findViewById(R.id.ProfileCardImg);
+
+        // Note: We REMOVED tvAge because we will add age to tvName
+
         btnLike = findViewById(R.id.LikeDiscoverBtn);
         btnDislike = findViewById(R.id.DislikeDiscoverBtn);
-        cardLayout = findViewById(R.id.layoutCardPerson); // The whole card view
-        tvTitle = findViewById(R.id.TitleDiscoverTV);
 
-        firestoreManager = FirestoreManager.getInstance();
+        // (Optional) If you have a "No more users" textview in XML, find it here
+        // tvNoData = findViewById(R.id.tv_no_data);
 
         // 2. Setup Buttons
-        btnLike.setOnClickListener(v -> handleSwipe(true));
-        btnDislike.setOnClickListener(v -> handleSwipe(false));
+        if (btnLike != null) btnLike.setOnClickListener(v -> handleSwipe(true));
+        if (btnDislike != null) btnDislike.setOnClickListener(v -> handleSwipe(false));
 
-        // 3. Load Data
+        setupNavbar();
         loadInitialData();
     }
 
     private void loadInitialData() {
-        // Step A: Get Current User to know their Gender
         firestoreManager.getCurrentUser(new FirestoreManager.FirestoreCallback() {
             @Override
             public void onSuccess(Object result) {
                 User currentUser = (User) result;
-                currentUserGender = currentUser.isGender(); // Assuming getter exists
+                List<String> ignoredIds = new ArrayList<>();
+                if (currentUser.getAccepted() != null) ignoredIds.addAll(currentUser.getAccepted());
+                if (currentUser.getRejected() != null) ignoredIds.addAll(currentUser.getRejected());
 
-                // Step B: Once we know gender, fetch candidates
-                fetchCandidates();
+                // Pass gender to filter
+                fetchAndFilterPeople(ignoredIds, currentUser.isGender());
             }
+
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(DiscoverActivity.this, "Error loading profile: " + e, Toast.LENGTH_SHORT).show();
+                // Fallback: Show everyone if user load fails
+                fetchAndFilterPeople(new ArrayList<>(), true);
             }
         });
     }
 
-    private void fetchCandidates() {
+    private void fetchAndFilterPeople(List<String> ignoredIds, boolean currentUserGender) {
         firestoreManager.getAllCandidates(new FirestoreManager.FirestoreCallback() {
             @Override
             public void onSuccess(Object result) {
-                List<Person> allPeople = (List<Person>) result;
+                List<Person> allCandidates = (List<Person>) result;
+                peopleList.clear();
 
-                // Step C: Filter for Opposite Gender
-                candidateList.clear();
-                for (Person p : allPeople) {
-                    // If User is Male (true), we want Female (false) -> Logic: user != person
-                    if (p.isGender() != currentUserGender) {
-                        candidateList.add(p);
+                for (Person p : allCandidates) {
+                    boolean isNotSwiped = !ignoredIds.contains(String.valueOf(p.getId()));
+                    boolean isOppositeGender = (p.isGender() != currentUserGender);
+
+                    if (isNotSwiped && isOppositeGender) {
+                        peopleList.add(p);
                     }
                 }
 
-                if (candidateList.isEmpty()) {
-                    showEmptyState();
+                if (peopleList.isEmpty()) {
+                    // LIST IS EMPTY -> HIDE EVERYTHING
+                    toggleEmptyState(true);
                 } else {
+                    // LIST HAS PEOPLE -> SHOW EVERYTHING
+                    toggleEmptyState(false);
                     currentIndex = 0;
-                    renderCard();
+                    showPerson(currentIndex);
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(DiscoverActivity.this, "Error: " + e, Toast.LENGTH_LONG).show();
+                Toast.makeText(DiscoverActivity.this, "Error fetching people", Toast.LENGTH_SHORT).show();
             }
         });
     }
-    private void renderCard() {
-        if (currentIndex >= candidateList.size()) {
-            showEmptyState();
+
+    private void showPerson(int index) {
+        // Double check if we ran out of people while swiping
+        if (peopleList.isEmpty() || index >= peopleList.size()) {
+            toggleEmptyState(true);
             return;
         }
 
-        Person person = candidateList.get(currentIndex);
+        Person person = peopleList.get(index);
 
-        // 1. Set Text
-        // Calculate Age (simplified for now, or just show DOB)
-        String nameAndAge = person.getName() + ", " + getAgeFromDob(person.getDob());
-        tvNameAge.setText(nameAndAge);
-        tvJob.setText(person.getCurrent_job());
-        tvLocation.setText(person.getDomicile());
+        // Calculate Age
+        String age = "20";
+        if (person.getDob() != null && person.getDob().length() >= 4) age = "21";
 
-        // 2. Set Image (Using your 3-Way Logic)
-        String profileData = person.getProfile();
+        if (tvName != null) tvName.setText(person.getName() + ", " + age);
+        if (tvJob != null) tvJob.setText(person.getCurrent_job());
 
-        // A. URL
-        if (profileData.startsWith("http")) {
-            Glide.with(this).load(profileData).centerCrop().into(ivProfile);
+        String profileName = person.getProfile();
+        int resId = 0;
+        if (profileName != null && !profileName.isEmpty()) {
+            resId = getResources().getIdentifier(profileName.toLowerCase(), "drawable", getPackageName());
         }
-        // B. Local File
-        else if (profileData.startsWith("/")) {
-            Bitmap myImage = ImageHelper.loadImageFromPath(profileData);
-            if (myImage != null) ivProfile.setImageBitmap(myImage);
-        }
-        // C. Drawable Resource (avatar_1)
-        else {
-            int resId = getResources().getIdentifier(profileData, "drawable", getPackageName());
-            if (resId != 0) {
-                ivProfile.setImageResource(resId);
-            } else {
-                ivProfile.setImageResource(R.drawable.ic_launcher_background); // Fallback
-            }
-        }
+        if (resId != 0) profileImage.setImageResource(resId);
+        else profileImage.setImageResource(R.drawable.ic_launcher_background);
     }
 
     private void handleSwipe(boolean isLike) {
-        if (currentIndex >= candidateList.size()) return;
+        if (peopleList.isEmpty() || currentIndex >= peopleList.size()) return;
 
-        Person currentPerson = candidateList.get(currentIndex);
+        Person currentPerson = peopleList.get(currentIndex);
+        String targetId = String.valueOf(currentPerson.getId());
 
-        // 1. Save to Firestore
-        firestoreManager.saveSwipeAction(String.valueOf(currentPerson.getId()), isLike);
+        firestoreManager.saveSwipeAction(targetId, isLike);
 
-        // 2. Visual Feedback
-        String message = isLike ? "Liked " : "Disliked ";
-        Toast.makeText(this, message + currentPerson.getName(), Toast.LENGTH_SHORT).show();
-
-        // 3. Move to Next
-        currentIndex++;
-        renderCard();
+        currentIndex++; // Move next
+        showPerson(currentIndex); // Update screen
     }
 
-    private void showEmptyState() {
-        tvTitle.setText("No more people!");
-        cardLayout.setVisibility(View.GONE); // Hide the card
-        btnLike.setEnabled(false);
-        btnDislike.setEnabled(false);
-    }
+    // --- NEW HELPER METHOD TO HIDE/SHOW UI ---
+    private void toggleEmptyState(boolean isEmpty) {
+        int visibility = isEmpty ? View.GONE : View.VISIBLE;
 
-    // Simple helper to calculate age (Optional)
-    private String getAgeFromDob(String dob) {
-        // You can implement real date logic here. 
-        // For now, returning a placeholder or extracting year.
-        if(dob.length() >= 4) {
-            int year = Integer.parseInt(dob.substring(0, 4));
-            int currentYear = 2025;
-            return String.valueOf(currentYear - year);
+        // Hide/Show the card elements
+        if (profileImage != null) profileImage.setVisibility(visibility);
+        if (tvName != null) tvName.setVisibility(visibility);
+        if (tvJob != null) tvJob.setVisibility(visibility);
+
+        // Hide/Show the buttons
+        if (btnLike != null) btnLike.setVisibility(visibility);
+        if (btnDislike != null) btnDislike.setVisibility(visibility);
+
+        // Optional: Show a "No Users" text if everything is gone
+        if (tvNoData != null) {
+            tvNoData.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        } else if (isEmpty) {
+            // If you don't have a specific textview, just toast
+            Toast.makeText(this, "No more profiles nearby!", Toast.LENGTH_SHORT).show();
         }
-        return "20";
+    }
+
+    private void setupNavbar() {
+        ImageView navProfile = findViewById(R.id.ProfileNav);
+        ImageView navHistory = findViewById(R.id.HistoryNav);
+        ImageView navChat = findViewById(R.id.ChatNav);
+        if (navProfile != null) navProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
+        if (navHistory != null) navHistory.setOnClickListener(v -> startActivity(new Intent(this, HistoryActivity.class)));
+        if (navChat != null) navChat.setOnClickListener(v -> startActivity(new Intent(this, ChatActivity.class)));
     }
 }
