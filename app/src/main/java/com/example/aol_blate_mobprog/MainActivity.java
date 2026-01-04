@@ -3,7 +3,7 @@ package com.example.aol_blate_mobprog;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences; // Import Penting
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -52,11 +52,10 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        //bersihin memory saat aplikasi baru dibuka
-        //mastiin biar awal" run ga ada datanya
+        // Clear memory on startup
         SharedPreferences prefs = getSharedPreferences("UserProfile", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.clear(); // hapus semua data yang tersimpan sebelumnya
+        editor.clear();
         editor.apply();
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -67,15 +66,14 @@ public class MainActivity extends AppCompatActivity {
 
         checkAndRequestPermissions();
 
-        //inisialisasi
+        // Initialize Views
         email = findViewById(R.id.editTextTextEmailAddress);
         password = findViewById(R.id.editTextNumberPassword2);
         confirmPassword = findViewById(R.id.editTextConfirmPassword);
         chkTerms = findViewById(R.id.checkBox);
-
         TextView tv = findViewById(R.id.tvlinktoPage);
 
-        //bisa ke login
+        // Link to Login
         String text = "Already Have an Account? Login";
         SpannableString ss = new SpannableString(text);
 
@@ -112,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
             boolean isValid = true;
 
-            // logic check email
+            // Logic check email
             if (!emailInput.contains("@gmail.com")) {
                 email.setError("Email must contain @gmail.com");
                 email.startAnimation(shake);
@@ -122,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                 email.getBackground().clearColorFilter();
             }
 
-            // logic check password
+            // Logic check password
             if (passwordInput.length() < 8) {
                 password.setError("Password must be at least 8 characters");
                 password.startAnimation(shake);
@@ -132,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 password.getBackground().clearColorFilter();
             }
 
-            // logic confirm password
+            // Logic confirm password
             if (!passwordInput.equals(confirmPasswordInput)) {
                 confirmPassword.setError("Passwords do not match");
                 confirmPassword.startAnimation(shake);
@@ -142,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 confirmPassword.getBackground().clearColorFilter();
             }
 
-            //terms n condition
+            // Terms and conditions
             if (!isTermsChecked) {
                 chkTerms.startAnimation(shake);
                 Toast.makeText(MainActivity.this, "You must agree to the terms and conditions", Toast.LENGTH_SHORT).show();
@@ -151,11 +149,13 @@ public class MainActivity extends AppCompatActivity {
 
             if (!isValid) return;
 
+            // Pass Email AND Password to the next step
             Intent intent = new Intent(MainActivity.this, AddProfileDetailActivity.class);
             intent.putExtra("email", emailInput);
+            intent.putExtra("password", passwordInput); // ADDED THIS
             startActivity(intent);
 
-            Toast.makeText(MainActivity.this, "🎉 Registration Successful!", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Step 1 Complete! Please fill details.", Toast.LENGTH_SHORT).show();
         });
 
         showHelpDialog();
@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showHelpDialog() {
         btnHelp = findViewById(R.id.btnHelp);
-        if(btnHelp != null) { // Safety check
+        if(btnHelp != null) {
             btnHelp.setOnClickListener(v -> {
                 Dialog dialog = new Dialog(this);
                 dialog.setContentView(R.layout.dialog_help);

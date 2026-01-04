@@ -18,6 +18,9 @@ public class FirestoreManager {
     private final CollectionReference peopleRef;
     private FirebaseAuth auth;
 
+    // Store the logged-in user's ID dynamically
+    private String currentUserId;
+
     private FirestoreManager() {
         db = FirebaseFirestore.getInstance();
         usersRef = db.collection("user");
@@ -36,9 +39,38 @@ public class FirestoreManager {
     }
 
     // --- USER FEATURES ---
+
+    // 1. Handle Login Query
+    public void loginUser(String email, String password, FirestoreCallback callback) {
+        usersRef.whereEqualTo("email", email)
+                .whereEqualTo("password", password)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        QueryDocumentSnapshot doc = (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0);
+                        User user = doc.toObject(User.class);
+
+                        // Save this ID so other methods (getCurrentUser/swipe) know who is logged in
+                        this.currentUserId = doc.getId();
+
+                        callback.onSuccess(user);
+                    } else {
+                        callback.onFailure(new Exception("User is not registered or wrong password"));
+                    }
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    // 2. Register New User
     public void registerNewUser(User newUser, FirestoreCallback callback) {
+        // We use String.valueOf(newUser.getId()) to create the Document ID.
+        // This ensures the ID in the document field matches the Document ID key.
         usersRef.document(String.valueOf(newUser.getId())).set(newUser)
-                .addOnSuccessListener(aVoid -> callback.onSuccess("Success"))
+                .addOnSuccessListener(aVoid -> {
+                    // Automatically log them in after registration
+                    this.currentUserId = String.valueOf(newUser.getId());
+                    callback.onSuccess("Success");
+                })
                 .addOnFailureListener(callback::onFailure);
     }
 
@@ -50,59 +82,32 @@ public class FirestoreManager {
         });
     }
 
-    // 1. Get Current User
+    // 3. Get Current User
     public void getCurrentUser(FirestoreCallback callback) {
-        // TESTING MODE: BYPASS AUTH CHECK
-//        if (auth.getCurrentUser() == null) {
-//            // FIX 1: Wrap the error message in a new Exception object
-//            callback.onFailure(new Exception("No user logged in"));
-//            return;
-//        }
-//        String userId = auth.getCurrentUser().getUid();
-//
-//        usersRef.document(userId).get().addOnSuccessListener(document -> {
-//            if (document.exists()) {
-//                callback.onSuccess(document.toObject(User.class));
-//            } else {
-//                // FIX 2: Wrap the error message in a new Exception object
-//                callback.onFailure(new Exception("User data not found in database"));
-//            }
-//        }).addOnFailureListener(e -> {
-//            // FIX 3: Pass the Exception 'e' directly (do not use .getMessage())
-//            callback.onFailure(e);
-//        });
+        if (currentUserId == null || currentUserId.isEmpty()) {
+            callback.onFailure(new Exception("No user is currently logged in."));
+            return;
+        }
 
-        // USE HARDCODED ID
-        String userId = "test_user_01";
-
-        usersRef.document(userId).get().addOnSuccessListener(document -> {
+        usersRef.document(currentUserId).get().addOnSuccessListener(document -> {
             if (document.exists()) {
                 callback.onSuccess(document.toObject(User.class));
             } else {
-                callback.onFailure(new Exception("Test user not found! Did you create 'test_user_01' in Firestore?"));
+                callback.onFailure(new Exception("User data not found in database"));
             }
         }).addOnFailureListener(callback::onFailure);
     }
 
-    // 2. Save Swipe Action
+    // 4. Save Swipe Action
     public void saveSwipeAction(String targetUserId, boolean isLike) {
-//        if (auth.getCurrentUser() == null) return; // Safety check
-//
-//        // THIS GETS THE REAL ID
-//        String userId = auth.getCurrentUser().getUid();
-//        String fieldName = isLike ? "accepted" : "rejected";
-//
-//        usersRef.document(userId).update(fieldName, FieldValue.arrayUnion(targetUserId));
-
-        // HARDCODE THE TEST USER ID HERE TOO
-        String userId = "test_user_01";
+        if (currentUserId == null) {
+            android.util.Log.e("DATING_APP", "Cannot swipe: No user logged in.");
+            return;
+        }
 
         String fieldName = isLike ? "accepted" : "rejected";
 
-        // Debug Log to confirm it fires
-        android.util.Log.d("DATING_APP", "Saving " + fieldName + " for " + targetUserId + " to user " + userId);
-
-        usersRef.document(userId).update(fieldName, FieldValue.arrayUnion(targetUserId))
+        usersRef.document(currentUserId).update(fieldName, FieldValue.arrayUnion(targetUserId))
                 .addOnSuccessListener(aVoid -> android.util.Log.d("DATING_APP", "Swipe Saved Successfully!"))
                 .addOnFailureListener(e -> android.util.Log.e("DATING_APP", "Swipe Failed: " + e.getMessage()));
     }
