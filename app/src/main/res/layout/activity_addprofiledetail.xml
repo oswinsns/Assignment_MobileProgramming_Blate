@@ -82,7 +82,7 @@
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/rectangle_signup"
-                android:drawableLeft="@drawable/baseline_password_24"
+                android:drawableLeft="@drawable/baseline_calendar_month_24"
                 android:drawablePadding="16dp"
                 android:hint="Date of Birth (DD/MM/YYYY)"
                 android:inputType="date"
