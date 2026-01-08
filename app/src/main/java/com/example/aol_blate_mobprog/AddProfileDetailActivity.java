@@ -87,7 +87,7 @@ public class AddProfileDetailActivity extends AppCompatActivity {
         String job = spJob.getSelectedItem().toString();
         String religion = spReligion.getSelectedItem().toString();
 
-        // Convert Gender (Assuming Male=True, Female=False for User model boolean)
+        // Convert Gender (Male=True, Female=False)
         int selectedId = rgGender.getCheckedRadioButtonId();
         boolean isMale = true;
         if (selectedId != -1) {
@@ -96,10 +96,10 @@ public class AddProfileDetailActivity extends AppCompatActivity {
             if(genderStr.equalsIgnoreCase("Female")) isMale = false;
         }
 
-        // 2. Create ID (Random Integer based on time)
+        // 2. Create ID (Random Integer time)
         int userId = (int) (System.currentTimeMillis() / 1000);
 
-        // 3. Create List of Hobbies (Model expects List<String>)
+        // 3. Create List of Hobbies (Model List<String>)
         List<String> hobbiesList = Collections.singletonList(hobby);
 
         // 4. Create User Object
@@ -127,7 +127,7 @@ public class AddProfileDetailActivity extends AppCompatActivity {
             public void onSuccess(Object result) {
                 Toast.makeText(AddProfileDetailActivity.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
 
-                // Save basic info to SharedPrefs for local profile view consistency if needed immediately
+                //Simpan informasi dasar ke SharedPrefs untuk konsistensi tampilan 
                 saveDataToMemory();
 
                 // Go to Discover
