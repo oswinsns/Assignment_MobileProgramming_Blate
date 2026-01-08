@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // 1. Initialize Views
+        // 1. Inisialisasi Views
         editTextTextEmailAddress = findViewById(R.id.editTextTextEmailAddress);
         editTextNumberPassword2 = findViewById(R.id.editTextNumberPassword2);
         btnLogin = findViewById(R.id.button2); 
@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Call FirestoreManager to check credentials
+        // Call FirestoreManager untuk memeriksa kredensial
         FirestoreManager.getInstance().loginUser(email, password, new FirestoreManager.FirestoreCallback() {
             @Override
             public void onSuccess(Object result) {
