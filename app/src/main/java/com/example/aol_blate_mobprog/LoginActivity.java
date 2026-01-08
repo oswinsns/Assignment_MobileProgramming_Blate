@@ -28,7 +28,7 @@ public class LoginActivity extends AppCompatActivity {
         // 1. Initialize Views
         editTextTextEmailAddress = findViewById(R.id.editTextTextEmailAddress);
         editTextNumberPassword2 = findViewById(R.id.editTextNumberPassword2);
-        btnLogin = findViewById(R.id.button2); // The ID from your XML is "button2"
+        btnLogin = findViewById(R.id.button2); 
 
         // 2. Set Login Button Listener
         btnLogin.setOnClickListener(v -> handleLogin());
@@ -58,15 +58,15 @@ public class LoginActivity extends AppCompatActivity {
                 // Login Successful
                 Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
 
-                // Navigate to DiscoveryActivity
+                // Navigasi ke DiscoveryActivity
                 Intent intent = new Intent(LoginActivity.this, DiscoverActivity.class);
                 startActivity(intent);
-                finish(); // Prevents user from going back to login screen using 'Back' button
+                finish(); // Cegah user kembali ke view login ketika pencet 'back'
             }
 
             @Override
             public void onFailure(Exception e) {
-                // Login Failed - User not in database or wrong password
+                // Login Failed - User tidak berhasil login / salah password
                 Toast.makeText(LoginActivity.this, "User is not registered", Toast.LENGTH_SHORT).show();
             }
         });
@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
             TextView tvMessage = dialog.findViewById(R.id.tvDialogMessage);
             Button btnClose = dialog.findViewById(R.id.btnCloseDialog);
 
-            // Check if views exist to prevent crashes if dialog xml is missing items
+            // Periksa jika XML dialog tidak berisi item.
             if(tvTitle != null) tvTitle.setText("Login Help");
             if(tvMessage != null) tvMessage.setText("Enter your registered email and password to log in. If you forgot your password, please contact admin support.");
 
