@@ -10,7 +10,7 @@ import java.io.InputStream;
 
 public class ImageHelper {
 
-    // 1. Save Image from Gallery to App Internal Storage
+    // 1. Save Image dari Gallery -> App Internal Storage
     public static String saveImageToInternalStorage(Context context, Uri uri) {
         try {
             String filename = "user_pfp_" + System.currentTimeMillis() + ".jpg";

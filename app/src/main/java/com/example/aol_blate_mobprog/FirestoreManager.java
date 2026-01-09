@@ -18,7 +18,7 @@ public class FirestoreManager {
     private final CollectionReference peopleRef;
     private FirebaseAuth auth;
 
-    // Store the logged-in user's ID dynamically
+    // menyimpan login user secara dinamis
     private String currentUserId;
 
     private FirestoreManager() {
@@ -50,7 +50,7 @@ public class FirestoreManager {
                         QueryDocumentSnapshot doc = (QueryDocumentSnapshot) querySnapshot.getDocuments().get(0);
                         User user = doc.toObject(User.class);
 
-                        // Save this ID so other methods (getCurrentUser/swipe) know who is logged in
+                        //Simpan ID untuk deteksi yg login dengan metode (getCurrentUser/swipe)
                         this.currentUserId = doc.getId();
 
                         callback.onSuccess(user);
@@ -63,8 +63,8 @@ public class FirestoreManager {
 
     // 2. Register New User
     public void registerNewUser(User newUser, FirestoreCallback callback) {
-        // We use String.valueOf(newUser.getId()) to create the Document ID.
-        // This ensures the ID in the document field matches the Document ID key.
+        // menggunakan String.valueOf(newUser.getId()) untuk membuat ID Dokumen. Memastikan ID cocok dengan Kunci
+
         usersRef.document(String.valueOf(newUser.getId())).set(newUser)
                 .addOnSuccessListener(aVoid -> {
                     // Automatically log them in after registration
